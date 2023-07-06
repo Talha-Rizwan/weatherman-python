@@ -1,9 +1,28 @@
 import sys
 import os
 
-def Calculate_mean(sum,count):
-    if count > 0:
-        return sum / count
+def main():
+    read_arguments()
+
+def read_arguments():
+    arguments = sys.argv
+
+    if len(arguments) > 2:
+        month_and_year = arguments[1]
+        file_path = arguments[2]
+        
+        List_split=split_month_and_year(month_and_year)
+
+        month=find_month_name(int(List_split[1]))
+        year=List_split[0]
+
+        path=generate_file_path(year, month)
+        print("the path is : ", path)
+
+        if month != 0 and os.path.exists(path):
+            Calculate_mean_temperature(path)
+        else:
+            print("invalid arguments format")
 
 def find_month_name(month_number):
     if month_number < 1 or month_number > 12 :
@@ -40,26 +59,6 @@ def split_month_and_year(month_and_year):
 def generate_file_path(year, month):
     path = 'weatherfiles/Murree_weather_'+year+month+'.txt'
     return path
-
-def read_arguments():
-    arguments = sys.argv
-
-    if len(arguments) > 2:
-        month_and_year = arguments[1]
-        file_path = arguments[2]
-        
-        List_split=split_month_and_year(month_and_year)
-
-        month=find_month_name(int(List_split[1]))
-        year=List_split[0]
-
-        path=generate_file_path(year, month)
-        print("the path is : ", path)
-
-        if month != 0 and os.path.exists(path):
-            Calculate_mean_temperature(path)
-        else:
-            print("invalid arguments format")
 
 
 def Calculate_mean_temperature(path):
@@ -103,10 +102,10 @@ def Calculate_mean_temperature(path):
 
     return highest_temperature_mean, lowest_temperature_mean, humidity_mean_average
 
-def main():
+def Calculate_mean(sum,count):
+    if count > 0:
+        return sum / count
 
-    read_arguments()
-    
 
 if __name__ == "__main__":
     main()
