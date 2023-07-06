@@ -4,12 +4,6 @@ import os
 def Calculate_mean(sum,count):
     if count > 0:
         return sum / count
-        
-
-
-
-
-
 
 def find_month_name(month_number):
     if month_number < 1 or month_number > 12 :
@@ -64,6 +58,8 @@ def read_arguments():
 
         if month != 0 and os.path.exists(path):
             Calculate_mean_temperature(path)
+        else:
+            print("invalid arguments format")
 
 
 def Calculate_mean_temperature(path):
