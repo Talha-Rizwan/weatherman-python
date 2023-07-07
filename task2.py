@@ -2,9 +2,9 @@ import sys
 import os
 
 def main():
-    read_arguments()
+    read_arguments_and_find_result()
 
-def read_arguments():
+def read_arguments_and_find_result():
     arguments = sys.argv
 
     if len(arguments) > 2:
