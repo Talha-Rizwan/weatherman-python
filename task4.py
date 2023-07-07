@@ -63,12 +63,10 @@ def generate_file_path(year, month):
     return path
 
 def read_file(path):
-
     file_path = path
 
     with open(file_path,'r') as file:
         next(file)
-        
         day_number=1
 
         for line in file:
@@ -84,24 +82,20 @@ def read_file(path):
             else:
                 current_lowest_temperature = None
 
-            if current_highest_temperature is not None:
-                horizontal_bar_chart(day_number,current_highest_temperature, RED)
+            if current_highest_temperature is not None and current_lowest_temperature is not None:
+                horizontal_bar_chart(day_number,current_highest_temperature, current_lowest_temperature)
             else:
                 print(f"{day_number}: ")
-
-            if current_lowest_temperature is not None:
-                horizontal_bar_chart(day_number,current_lowest_temperature, BLUE)
-            else:
-                print(f"{day_number}: ")
-
             day_number+=1
 
 
-def horizontal_bar_chart(day_number,value, color):
+def horizontal_bar_chart(day_number,highest_temperature,lowest_temperature):
     print(f"{day_number}: ", end="")
-    for i in range(value):
-        print(color+"+"+RESET, end="")
-    print(f" {value}C")
+    for i in range(lowest_temperature):
+        print(BLUE+"+"+RESET, end="")
+    for i in range(highest_temperature):
+        print(RED+"+"+RESET, end="")
+    print(f" {lowest_temperature}C-{highest_temperature}C")
 
 if __name__ == "__main__":
     main()
