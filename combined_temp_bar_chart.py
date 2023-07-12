@@ -1,5 +1,6 @@
 import sys
 import os
+import csv
 
 
 RED = '\033[0;31m'
@@ -56,26 +57,24 @@ def split_month_and_year(month_and_year):
 def generate_file_path(year, month):
     return f'weatherfiles/Murree_weather_{year}{month}.txt'
 
-
 def extract_temperatures_from_the_dataset_row(weather_data_of_single_row):
     daily_temperature_values = {
                 'highest_temperature' : 0, 
                 'lowest_temperature' : 0, 
             }
-    
-    all_feature_of_the_dataset = weather_data_of_single_row.split(',')
 
-    if all_feature_of_the_dataset[1] != '':
-        daily_temperature_values['highest_temperature'] = int(all_feature_of_the_dataset[1].strip())
+    if weather_data_of_single_row['Max TemperatureC'] != '':
+        daily_temperature_values['highest_temperature'] = int(weather_data_of_single_row['Max TemperatureC'])
     else:
         daily_temperature_values['highest_temperature'] = None
 
-    if all_feature_of_the_dataset[3] != '':
-        daily_temperature_values['lowest_temperature'] = int(all_feature_of_the_dataset[3].strip())
+    if weather_data_of_single_row['Min TemperatureC'] != '':
+        daily_temperature_values['lowest_temperature'] = int(weather_data_of_single_row['Min TemperatureC'])
     else:
         daily_temperature_values['lowest_temperature'] = None
-
+    
     return daily_temperature_values
+
 
 
 def generate_bar_chart_for_each_value(day_number, daily_temperature_values):
@@ -88,12 +87,13 @@ def generate_bar_chart_for_each_value(day_number, daily_temperature_values):
 
 
 def read_file(file_path):
-    with open(file_path,'r') as file:
-        next(file)
-        
+    with open(file_path) as file:
+        all_data_rows = csv.DictReader(file)
+
         day_number = 1
-        for weather_data_of_single_row in file:
-            daily_temperature_values = extract_temperatures_from_the_dataset_row(weather_data_of_single_row)            
+        for weather_data_of_single_row in all_data_rows:
+            daily_temperature_values = extract_temperatures_from_the_dataset_row(weather_data_of_single_row)
+                        
             generate_bar_chart_for_each_value(day_number, daily_temperature_values)
             day_number += 1
 

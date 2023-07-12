@@ -1,5 +1,6 @@
 import sys
 import os
+import csv
 
 
 def get_monthly_average_temperature_stats():
@@ -73,12 +74,11 @@ def initialize_temperature_mean_values():
 
 
 def read_file(file_path):
-
-    with open(file_path,'r') as file:
-        next(file)
+    with open(file_path) as file:
         temperature_sum_values = initialize_temperature_sum_values()
-
-        for weather_data_of_single_row in file:
+        all_data_rows = csv.DictReader(file)
+        
+        for weather_data_of_single_row in all_data_rows:
             daily_temperature_values = extract_required_weatherdata_from_dataset(weather_data_of_single_row)
             compute_the_sum_of_all_rows(temperature_sum_values, daily_temperature_values)
 
@@ -97,13 +97,11 @@ def initialize_temperature_sum_values():
             }
 
 
-def extract_required_weatherdata_from_dataset(weather_data_of_single_row):
-    all_feature_of_the_dataset = weather_data_of_single_row.split(',')
-    
+def extract_required_weatherdata_from_dataset(weather_data_of_single_row):    
     return {
-                'highest_temperature' : all_feature_of_the_dataset[1].strip(), 
-                'lowest_temperature' : all_feature_of_the_dataset[3].strip(), 
-                'maximum_humidity' : all_feature_of_the_dataset[8].strip(),
+            'highest_temperature' : weather_data_of_single_row['Max TemperatureC'], 
+            'lowest_temperature' : weather_data_of_single_row['Min TemperatureC'], 
+            'maximum_humidity' : weather_data_of_single_row[' Mean Humidity'],
             }
     
 def compute_sum_of_single_attribute(daily_temperature_values, temperature_sum_values, key_attribute ):

@@ -1,6 +1,7 @@
 import sys
 import os
 import math
+import csv
 
 
 def get_yearly_temperature_stats():
@@ -28,13 +29,15 @@ def read_file(yearly_temperature_values, year):
     for month_number in range(1, 13):
         month = find_month_name(month_number)
         file_path = generate_file_path(year, month)
+        
 
         if os.path.exists(file_path):
-            with open(file_path, 'r') as file:
-                next(file)
+            with open(file_path) as file:
+                all_data_rows = csv.DictReader(file)
                 
                 monthly_temperature_values = initialize_temperature_values()
-                read_file_line_by_line(file, monthly_temperature_values)
+
+                read_file_line_by_line(all_data_rows, monthly_temperature_values)
                 compare_monthly_with_yearly_weather_values(monthly_temperature_values, yearly_temperature_values)
               
     display_results(yearly_temperature_values)
@@ -67,8 +70,8 @@ def generate_file_path(year, month):
     return f'weatherfiles/Murree_weather_{year}{month}.txt'
     
 
-def read_file_line_by_line(file, monthly_temperature_values):
-    for weather_data_of_single_row in file:
+def read_file_line_by_line(all_data_rows, monthly_temperature_values):
+    for weather_data_of_single_row in all_data_rows:
         daily_temperature_values = extract_required_weatherdata_from_dataset \
                                                             (weather_data_of_single_row)
         compare_daily_with_monthly_weather_values(daily_temperature_values, 
@@ -76,12 +79,11 @@ def read_file_line_by_line(file, monthly_temperature_values):
 
 
 def extract_required_weatherdata_from_dataset(weather_data_of_single_row):
-    all_feature_of_the_dataset = weather_data_of_single_row.split(',')
     return  {
-                'highest_temperature' : int(all_feature_of_the_dataset[1].strip()), 
-                'lowest_temperature' : int(all_feature_of_the_dataset[3].strip()), 
-                'maximum_humidity' : int(all_feature_of_the_dataset[8].strip()),
-                'date_of_the_day' : all_feature_of_the_dataset[0].strip()
+                'highest_temperature' : int(weather_data_of_single_row['Max TemperatureC']), 
+                'lowest_temperature' : int(weather_data_of_single_row['Min TemperatureC']), 
+                'maximum_humidity' : int(weather_data_of_single_row[' Mean Humidity']),
+                'date_of_the_day' : weather_data_of_single_row['PKT']
             }
 
 
@@ -143,6 +145,7 @@ def compare_monthly_with_yearly_weather_values(monthly_temperature_values,
         (monthly_temperature_values, yearly_temperature_values, 'lowest_temperature')
     compare_temperature_for_single_attribute_of_monthly_to_yearly \
         (monthly_temperature_values, yearly_temperature_values, 'maximum_humidity')
+
 
 def set_date_to_correct_format(date):
     date_components = date.split('-')
