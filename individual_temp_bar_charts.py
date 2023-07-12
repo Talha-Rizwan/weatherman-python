@@ -1,43 +1,32 @@
 import sys
 import os
 
-class TemperatureDailyRecords:
-    def __init__(self, highest_temperature_of_the_day, lowest_temperature_of_the_day):
-        self.highest_temperature_of_the_day = highest_temperature_of_the_day
-        self.lowest_temperature_of_the_day = lowest_temperature_of_the_day
-
-
 RED = '\033[0;31m'
 BLUE = '\033[34m'
 RESET = '\033[0m'
 
 def individual_bar_charts_for_highest_and_lowest_temperature_of_month():
     month_and_year = read_arguments()
-    List_split = split_month_and_year(month_and_year)
+    List_split = month_and_year.split('/')
     month = find_month_name(int(List_split[1]))
     year = List_split[0]
     path = generate_file_path(year, month)
+
     if month != 0 and os.path.exists(path):
         read_file(path)
     else:
-        print(f'invalid arguments format')
+        print('invalid arguments format')
         
 
 def read_arguments():
     arguments = sys.argv
 
     if len(arguments) > 2:
-        month_and_year = arguments[2]
-        file_path = arguments[3]
-        return month_and_year
+        return arguments[2]
     
-
-def initialize_the_day_temperature_variables(highest_temperature, lowest_temperature ):
-    return TemperatureDailyRecords(highest_temperature, lowest_temperature)
-
     
 def find_month_name(month_number):
-    month_dict = {
+    MONTH_NAMES = {
         1: '_Jan',
         2: '_Feb',
         3: '_Mar',
@@ -53,43 +42,43 @@ def find_month_name(month_number):
     }
 
     if month_number < 1 or month_number > 12:
-        print(f'Invalid input format entered')
+        print('Invalid input format entered')
         return 0
 
-    return month_dict[month_number]
-
-
-def split_month_and_year(month_and_year):
-    return month_and_year.split('/')
+    return MONTH_NAMES[month_number]
 
 
 def generate_file_path(year, month):
-    path = 'weatherfiles/Murree_weather_' + year + month + '.txt'
-    return path
+    return f'weatherfiles/Murree_weather_{year}{month}.txt'
 
 
-def extract_temperatures_from_the_dataset_row(line):
-    daily_temperature_values = initialize_the_day_temperature_variables(0, 0)
-    all_columns = line.split(',')
+def extract_temperatures_from_the_dataset_row(weather_data_of_single_row):
+    daily_temperature_values = {
+                'highest_temperature' : 0, 
+                'lowest_temperature' : 0, 
+            }
+    
+    all_feature_of_the_dataset = weather_data_of_single_row.split(',')
 
-    if all_columns[1] != '':
-        daily_temperature_values.highest_temperature_of_the_day = int(all_columns[1].strip())
+    if all_feature_of_the_dataset[1] != '':
+        daily_temperature_values['highest_temperature'] = int(all_feature_of_the_dataset[1].strip())
     else:
-        daily_temperature_values.highest_temperature_of_the_day = None
+        daily_temperature_values['highest_temperature'] = None
 
-    if all_columns[3] != '':
-        daily_temperature_values.lowest_temperature_of_the_day = int(all_columns[3].strip())
+    if all_feature_of_the_dataset[3] != '':
+        daily_temperature_values['lowest_temperature'] = int(all_feature_of_the_dataset[3].strip())
     else:
-        daily_temperature_values.lowest_temperature_of_the_day = None
+        daily_temperature_values['lowest_temperature'] = None
     
     return daily_temperature_values
 
 
 def generate_bar_chart_for_each_value(day_number,temperature_value, color):
+
     if temperature_value is not None:
         display_horizontal_bar_chart(day_number, temperature_value, color)
     else:
-        print(f'{day_number}: ')
+        print(f'{day_number}: No Data ')
 
 
 def read_file(file_path):
@@ -97,11 +86,15 @@ def read_file(file_path):
         next(file)
         
         day_number = 1
-        for line in file:
-            daily_temperature_values = extract_temperatures_from_the_dataset_row(line)
+        for weather_data_of_single_row in file:
+            daily_temperature_values = extract_temperatures_from_the_dataset_row(weather_data_of_single_row)
             
-            generate_bar_chart_for_each_value(day_number, daily_temperature_values.highest_temperature_of_the_day, RED)
-            generate_bar_chart_for_each_value(day_number, daily_temperature_values.lowest_temperature_of_the_day, BLUE)
+            generate_bar_chart_for_each_value(day_number, 
+                                              daily_temperature_values['highest_temperature'], 
+                                              RED)
+            generate_bar_chart_for_each_value(day_number, 
+                                              daily_temperature_values['lowest_temperature'], 
+                                              BLUE)
             day_number += 1
 
 

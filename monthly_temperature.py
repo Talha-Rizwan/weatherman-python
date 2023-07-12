@@ -2,48 +2,22 @@ import sys
 import os
 
 
-class TemperatureSumResults:
-    def __init__(self, highest_temperature_sum, lowest_temperature_sum, humidity_sum,
-                 highest_temperature_count, lowest_temperature_count,
-                 humidity_count):
-        self.highest_temperature_sum = highest_temperature_sum
-        self.lowest_temperature_sum = lowest_temperature_sum
-        self.humidity_sum = humidity_sum
-        self.highest_temperature_count = highest_temperature_count
-        self.lowest_temperature_count = lowest_temperature_count
-        self.humidity_count = humidity_count
-
-
-class TemperatureMeanResults:
-    def __init__(self, highest_temperature_mean, lowest_temperature_mean, maximum_humidity_mean,
-                 ):
-        self.highest_temperature_mean = highest_temperature_mean
-        self.lowest_temperature_mean = lowest_temperature_mean
-        self.maximum_humidity_mean = maximum_humidity_mean
-        
-
-class TemperatureDailyRecords:
-    def __init__(self, highest_temperature_of_the_day, lowest_temperature_of_the_day, maximum_humidity_of_the_day):
-        self.highest_temperature_of_the_day = highest_temperature_of_the_day
-        self.lowest_temperature_of_the_day = lowest_temperature_of_the_day
-        self.maximum_humidity_of_the_day = maximum_humidity_of_the_day
-
-
 def get_monthly_average_temperature_stats():
-    month_and_year = get_command_line_arguments()
+    month_and_year = get_year_from_arguments()
     year_and_month_list = seperate_month_and_year_of_the_argument(month_and_year)
     path = generate_file_path(year_and_month_list[1], year_and_month_list[0])
     get_the_average_temperatures(year_and_month_list, path)
 
 
-def get_command_line_arguments():
+def get_year_from_arguments():
     arguments = sys.argv
+
     if len(arguments) > 2:
-        month_and_year = arguments[2]
-        file_path = arguments[3]
-        return month_and_year
+        return arguments[2]
+
     
 def seperate_month_and_year_of_the_argument(month_and_year):
+
     if month_and_year is not None:
         List_split = split_month_and_year(month_and_year)
         month = find_month_name(int(List_split[1]))
@@ -52,19 +26,19 @@ def seperate_month_and_year_of_the_argument(month_and_year):
 
 
 def generate_file_path(year, month):
-    path = 'weatherfiles/Murree_weather_' + year + month + '.txt'
-    return path
+    return f'weatherfiles/Murree_weather_{year}{month}.txt'
 
 
 def get_the_average_temperatures(year_and_month_list, path):
+
     if year_and_month_list[0] != 0 and os.path.exists(path):
         read_file(path)
     else:
-        print(f'invalid arguments format')
+        print('invalid arguments format')
 
     
 def find_month_name(month_number):
-    month_dict = {
+    MONTH_NAMES = {
         1: '_Jan',
         2: '_Feb',
         3: '_Mar',
@@ -80,70 +54,87 @@ def find_month_name(month_number):
     }
 
     if month_number < 1 or month_number > 12:
-        print(f'Invalid input format entered')
+        print('Invalid input format entered')
         return 0
 
-    return month_dict[month_number]
+    return MONTH_NAMES[month_number]
 
     
 def split_month_and_year(month_and_year):
     return month_and_year.split('/')
 
 
+def initialize_temperature_mean_values():
+    return {
+            'highest_temperature_mean' : 0, 
+            'lowest_temperature_mean' :0, 
+            'maximum_humidity_mean' : 0
+            }
+
+
 def read_file(file_path):
 
     with open(file_path,'r') as file:
         next(file)
-        temperature_values = initialize_the_temperature_sum_results()
+        temperature_sum_values = initialize_temperature_sum_values()
 
-        for line in file:
-            daily_temperature_values = extract_the_required_dataset_features_from_row(line)
-            compute_the_sum_of_all_rows(temperature_values, daily_temperature_values)
+        for weather_data_of_single_row in file:
+            daily_temperature_values = extract_required_weatherdata_from_dataset(weather_data_of_single_row)
+            compute_the_sum_of_all_rows(temperature_sum_values, daily_temperature_values)
 
-    mean_result_values = calculate_mean_temperature(temperature_values)
-    display_the_calculated_results(mean_result_values)
-    return mean_result_values.highest_temperature_mean, mean_result_values.lowest_temperature_mean, mean_result_values.maximum_humidity_mean
+    mean_result_values = calculate_mean_temperature(temperature_sum_values)
+    display_results(mean_result_values)
+    return mean_result_values['highest_temperature_mean'], \
+            mean_result_values['lowest_temperature_mean'], \
+            mean_result_values['maximum_humidity_mean']
 
 
-def initialize_the_temperature_sum_results():
-    return TemperatureSumResults(0,0,0,0,0,0)
+def initialize_temperature_sum_values():
+    return {
+            'highest_temperature' : {'sum' : 0, 'count' : 0 }, 
+            'lowest_temperature' : {'sum' : 0, 'count' : 0 }, 
+            'maximum_humidity' : {'sum' : 0, 'count' : 0 }
+            }
 
-def initialize_the_temperature_mean_results():
-    return TemperatureMeanResults(0,0,0)
 
-def initialize_the_day_temperature_variables(highest_temperature, lowest_temperature, maximum_humidity ):
-    return TemperatureDailyRecords(highest_temperature, lowest_temperature, maximum_humidity)
-
-def extract_the_required_dataset_features_from_row(line):
-    all_feature_of_the_dataset = line.split(',')
-    daily_temperature_values = initialize_the_day_temperature_variables(all_feature_of_the_dataset[1].strip(), all_feature_of_the_dataset[3].strip(), all_feature_of_the_dataset[8].strip() )
-    return daily_temperature_values
-
-def compute_the_sum_of_all_rows(temperature_values, daily_temperature_values):
-    if daily_temperature_values.highest_temperature_of_the_day:
-        temperature_values.highest_temperature_sum += float(daily_temperature_values.highest_temperature_of_the_day)
-        temperature_values.highest_temperature_count += 1
-
-    if daily_temperature_values.lowest_temperature_of_the_day:
-        temperature_values.lowest_temperature_sum += float(daily_temperature_values.lowest_temperature_of_the_day)
-        temperature_values.lowest_temperature_count += 1
+def extract_required_weatherdata_from_dataset(weather_data_of_single_row):
+    all_feature_of_the_dataset = weather_data_of_single_row.split(',')
     
-    if daily_temperature_values.maximum_humidity_of_the_day:
-        temperature_values.humidity_sum += float(daily_temperature_values.maximum_humidity_of_the_day)
-        temperature_values.humidity_count += 1
+    return {
+                'highest_temperature' : all_feature_of_the_dataset[1].strip(), 
+                'lowest_temperature' : all_feature_of_the_dataset[3].strip(), 
+                'maximum_humidity' : all_feature_of_the_dataset[8].strip(),
+            }
+    
+def compute_sum_of_single_attribute(daily_temperature_values, temperature_sum_values, key_attribute ):
 
-def calculate_mean_temperature(temperature_values):
-    mean_result_values = initialize_the_temperature_mean_results()
-    mean_result_values.highest_temperature_mean = Calculate_mean( temperature_values.highest_temperature_sum , temperature_values.highest_temperature_count)
-    mean_result_values.lowest_temperature_mean = Calculate_mean(temperature_values.lowest_temperature_sum ,temperature_values.lowest_temperature_count) 
-    mean_result_values.maximum_humidity_mean = Calculate_mean( temperature_values.humidity_sum , temperature_values.humidity_count)
+    if daily_temperature_values[key_attribute]:
+        temperature_sum_values[key_attribute]['sum'] += int(daily_temperature_values[key_attribute])
+        temperature_sum_values[key_attribute]['count'] += 1
+
+
+def compute_the_sum_of_all_rows(temperature_sum_values, daily_temperature_values):
+    compute_sum_of_single_attribute(daily_temperature_values, temperature_sum_values, 'highest_temperature')
+    compute_sum_of_single_attribute(daily_temperature_values, temperature_sum_values, 'lowest_temperature')
+    compute_sum_of_single_attribute(daily_temperature_values, temperature_sum_values, 'maximum_humidity')
+    
+
+def calculate_mean_temperature(temperature_sum_values):
+    mean_result_values = initialize_temperature_mean_values()
+    mean_result_values['highest_temperature_mean'] = Calculate_mean( temperature_sum_values['highest_temperature']['sum']  , temperature_sum_values['highest_temperature']['count'] )
+    mean_result_values['lowest_temperature_mean'] = Calculate_mean(temperature_sum_values['lowest_temperature']['sum']  ,temperature_sum_values['lowest_temperature']['count'] ) 
+    mean_result_values['maximum_humidity_mean'] = Calculate_mean( temperature_sum_values['maximum_humidity']['sum']  , temperature_sum_values['maximum_humidity']['count'])
     return mean_result_values
 
-def display_the_calculated_results(mean_result_values):
-    print(f'Highest Average: {mean_result_values.highest_temperature_mean} \nLowest Average: {mean_result_values.lowest_temperature_mean} \nAverage Humidty: {mean_result_values.maximum_humidity_mean}')
+
+def display_results(mean_result_values):
+    print(f'Highest Average: {mean_result_values["highest_temperature_mean"]}C')
+    print(f'Lowest Average: {mean_result_values["lowest_temperature_mean"]}C')
+    print(f'Average Humidty: {mean_result_values["maximum_humidity_mean"]}%')
+    
 
 
-def Calculate_mean(sum,count):
+def Calculate_mean(sum, count):
+    
     if count > 0:
-        return sum / count
-
+        return int(sum / count)

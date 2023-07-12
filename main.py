@@ -15,10 +15,10 @@ def check_flag_argument():
     flag = arguments[1]
 
     flag_dict = {
-            '-e': get_yearly_temperature_stats,
-            '-a': get_monthly_average_temperature_stats,
-            '-c': individual_bar_charts_for_highest_and_lowest_temperature_of_month,
-            '-d': combined_bar_chart_for_highest_and_lowest_temperature_of_month
+        '-e': get_yearly_temperature_stats,
+        '-a': get_monthly_average_temperature_stats,
+        '-c': individual_bar_charts_for_highest_and_lowest_temperature_of_month,
+        '-d': combined_bar_chart_for_highest_and_lowest_temperature_of_month
         }
 
     flag_dict.get(flag, invalid_flag)()
