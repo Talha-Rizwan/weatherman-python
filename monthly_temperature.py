@@ -121,9 +121,12 @@ def compute_the_sum_of_all_rows(temperature_sum_values, daily_temperature_values
 
 def calculate_mean_temperature(temperature_sum_values):
     mean_result_values = initialize_temperature_mean_values()
-    mean_result_values['highest_temperature_mean'] = Calculate_mean( temperature_sum_values['highest_temperature']['sum']  , temperature_sum_values['highest_temperature']['count'] )
-    mean_result_values['lowest_temperature_mean'] = Calculate_mean(temperature_sum_values['lowest_temperature']['sum']  ,temperature_sum_values['lowest_temperature']['count'] ) 
-    mean_result_values['maximum_humidity_mean'] = Calculate_mean( temperature_sum_values['maximum_humidity']['sum']  , temperature_sum_values['maximum_humidity']['count'])
+    mean_result_values['highest_temperature_mean'] = Calculate_mean( temperature_sum_values['highest_temperature']['sum'], 
+                                                                        temperature_sum_values['highest_temperature']['count'] )
+    mean_result_values['lowest_temperature_mean'] = Calculate_mean(temperature_sum_values['lowest_temperature']['sum'],
+                                                                        temperature_sum_values['lowest_temperature']['count'] ) 
+    mean_result_values['maximum_humidity_mean'] = Calculate_mean( temperature_sum_values['maximum_humidity']['sum'], 
+                                                                        temperature_sum_values['maximum_humidity']['count'])
     return mean_result_values
 
 

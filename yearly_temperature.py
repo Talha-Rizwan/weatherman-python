@@ -18,9 +18,9 @@ def get_year_from_arguments():
 
 def initialize_temperature_values():
     return {
-            'highest_temperature' : {'value' : -math.inf, 'date' : 0 }, 
-            'lowest_temperature' : {'value' : math.inf, 'date' : 0 }, 
-            'maximum_humidity' : {'value' : -math.inf, 'date' : 0 }
+            'highest_temperature' : {'value' : -math.inf, 'date' : None }, 
+            'lowest_temperature' : {'value' : math.inf, 'date' : None }, 
+            'maximum_humidity' : {'value' : -math.inf, 'date' : None }
             }
 
 
@@ -143,14 +143,19 @@ def compare_monthly_with_yearly_weather_values(monthly_temperature_values,
         (monthly_temperature_values, yearly_temperature_values, 'lowest_temperature')
     compare_temperature_for_single_attribute_of_monthly_to_yearly \
         (monthly_temperature_values, yearly_temperature_values, 'maximum_humidity')
+
+def set_date_to_correct_format(date):
+    date_components = date.split('-')
+    return f'{find_month_name(int(date_components[1])).replace("_", "")} {date_components[2]}'
     
     
 def display_results(yearly_temperature_values):
     
-    if yearly_temperature_values['highest_temperature']['date'] != 0 \
-            and yearly_temperature_values['lowest_temperature']['date'] != 0 and yearly_temperature_values['maximum_humidity']['date']:
-        print(f'Highest: {yearly_temperature_values["highest_temperature"]["value"]}C on {yearly_temperature_values["highest_temperature"]["date"] } ')
-        print(f'Lowest: {yearly_temperature_values["lowest_temperature"]["value"]}C on {yearly_temperature_values["lowest_temperature"]["date"]} ')
-        print(f'Humid: {yearly_temperature_values["maximum_humidity"]["value"]}C on {yearly_temperature_values["maximum_humidity"]["date"]} ')
+    if yearly_temperature_values['highest_temperature']['date'] is not None \
+            and yearly_temperature_values['lowest_temperature']['date'] is not None \
+                and yearly_temperature_values['maximum_humidity']['date'] is not None:
+        print(f'Highest: {yearly_temperature_values["highest_temperature"]["value"]}C on {set_date_to_correct_format(yearly_temperature_values["highest_temperature"]["date"]) } ')
+        print(f'Lowest: {yearly_temperature_values["lowest_temperature"]["value"]}C on {set_date_to_correct_format(yearly_temperature_values["lowest_temperature"]["date"])} ')
+        print(f'Humid: {yearly_temperature_values["maximum_humidity"]["value"]}C on {set_date_to_correct_format(yearly_temperature_values["maximum_humidity"]["date"])} ')
     else:
         print('no data to display')
