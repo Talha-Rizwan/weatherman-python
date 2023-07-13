@@ -2,6 +2,7 @@ import sys
 import os
 import math
 import csv
+import glob
 
 
 def get_yearly_temperature_stats():
@@ -13,7 +14,7 @@ def get_yearly_temperature_stats():
 def get_command_line_arguments():
     arguments = sys.argv
 
-    if len(arguments) > 3:
+    if len(arguments) > 3 and int(arguments[2]) > 0:
         command_line_arguments = {
             'flag' : arguments[1],
             'year' : arguments[2],
@@ -29,21 +30,22 @@ def initialize_temperature_values():
             'maximum_humidity' : {'value' : -math.inf, 'date' : None }
             }
 
+def get_files(arguments):
+    return glob.glob(f'{arguments["file_path"]}weatherfiles/Murree_weather_{arguments["year"]}_???.txt')
+
 
 def read_file(yearly_temperature_values, arguments):
-    for month_number in range(1, 13):
-        month = find_month_name(month_number)
-        file_path = generate_file_path(arguments, month)        
+    file_paths = get_files(arguments)
+    for file in file_paths:
+        with open(file) as file:
+            all_data_rows = csv.DictReader(file)
+            
+            monthly_temperature_values = initialize_temperature_values()
 
-        if os.path.exists(file_path):
-            with open(file_path) as file:
-                all_data_rows = csv.DictReader(file)
-                
-                monthly_temperature_values = initialize_temperature_values()
+            read_file_line_by_line(all_data_rows, monthly_temperature_values)
+            compare_monthly_with_yearly_weather_values(monthly_temperature_values, yearly_temperature_values)
 
-                read_file_line_by_line(all_data_rows, monthly_temperature_values)
-                compare_monthly_with_yearly_weather_values(monthly_temperature_values, yearly_temperature_values)
-              
+             
     display_results(yearly_temperature_values)
 
 
@@ -69,10 +71,6 @@ def find_month_name(month_number):
 
     return MONTH_NAMES[month_number]
 
-
-def generate_file_path(arguments, month):
-    return f'{arguments["file_path"]}weatherfiles/Murree_weather_{arguments["year"]}{month}.txt'
-    
 
 def read_file_line_by_line(all_data_rows, monthly_temperature_values):
     for weather_data_of_single_row in all_data_rows:

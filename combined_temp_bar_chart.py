@@ -11,7 +11,7 @@ RESET = '\033[0m'
 def combined_bar_chart_for_highest_and_lowest_temperature_of_month():
     command_line_arguments = read_arguments()
     path = generate_file_path(command_line_arguments)
-    
+
     if os.path.exists(path):
         read_file(path)
     else:
@@ -60,7 +60,10 @@ def generate_file_path(command_line_arguments):
     List_split = command_line_arguments['month_and_year'].split('/')
     month = find_month_name(int(List_split[1]))
     year = List_split[0]
-    return f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year}{month}.txt'
+    if int(year) > 0:
+        return f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year}{month}.txt'
+    else :
+        print('invalid year entered')
 
 
 def extract_temperatures_from_the_dataset_row(weather_data_of_single_row):

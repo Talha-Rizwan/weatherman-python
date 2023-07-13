@@ -34,7 +34,10 @@ def get_month_and_year_from_argument(month_and_year):
 def generate_file_path(command_line_arguments ):
     year_and_month_list = get_month_and_year_from_argument(command_line_arguments['month_and_year'])
 
-    return f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year_and_month_list[1]}{year_and_month_list[0]}.txt'
+    if int(year_and_month_list[1]) > 0 :
+        return f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year_and_month_list[1]}{year_and_month_list[0]}.txt'
+    else :
+        print('invaild year entered')
 
 
 def get_the_average_temperatures( path):
