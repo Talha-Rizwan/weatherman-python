@@ -5,16 +5,21 @@ import csv
 
 
 def get_yearly_temperature_stats():
-    year = get_year_from_arguments()
+    arguments = get_command_line_arguments()
     yearly_temperature_values = initialize_temperature_values()    
-    read_file(yearly_temperature_values, year)
+    read_file(yearly_temperature_values, arguments)
 
 
-def get_year_from_arguments():
+def get_command_line_arguments():
     arguments = sys.argv
 
-    if len(arguments) > 2:
-        return arguments[2]
+    if len(arguments) > 3:
+        command_line_arguments = {
+            'flag' : arguments[1],
+            'year' : arguments[2],
+            'file_path' : arguments[3]
+        }
+        return command_line_arguments
 
 
 def initialize_temperature_values():
@@ -25,11 +30,10 @@ def initialize_temperature_values():
             }
 
 
-def read_file(yearly_temperature_values, year):
+def read_file(yearly_temperature_values, arguments):
     for month_number in range(1, 13):
         month = find_month_name(month_number)
-        file_path = generate_file_path(year, month)
-        
+        file_path = generate_file_path(arguments, month)        
 
         if os.path.exists(file_path):
             with open(file_path) as file:
@@ -66,8 +70,8 @@ def find_month_name(month_number):
     return MONTH_NAMES[month_number]
 
 
-def generate_file_path(year, month):
-    return f'weatherfiles/Murree_weather_{year}{month}.txt'
+def generate_file_path(arguments, month):
+    return f'{arguments["file_path"]}weatherfiles/Murree_weather_{arguments["year"]}{month}.txt'
     
 
 def read_file_line_by_line(all_data_rows, monthly_temperature_values):

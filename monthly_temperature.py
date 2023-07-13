@@ -4,20 +4,25 @@ import csv
 
 
 def get_monthly_average_temperature_stats():
-    month_and_year = get_year_from_arguments()
-    year_and_month_list = seperate_month_and_year_of_the_argument(month_and_year)
-    path = generate_file_path(year_and_month_list[1], year_and_month_list[0])
-    get_the_average_temperatures(year_and_month_list, path)
+    command_line_arguments = get_command_line_arguments()
+    path = generate_file_path( command_line_arguments)
+    get_the_average_temperatures(path)
 
 
-def get_year_from_arguments():
+def get_command_line_arguments():
     arguments = sys.argv
 
-    if len(arguments) > 2:
-        return arguments[2]
+    if len(arguments) > 3:
+        command_line_arguments = {
+            'flag' : arguments[1],
+            'month_and_year' : arguments[2],
+            'file_path' : arguments[3]
+        }
+        return command_line_arguments
+
 
     
-def seperate_month_and_year_of_the_argument(month_and_year):
+def get_month_and_year_from_argument(month_and_year):
 
     if month_and_year is not None:
         List_split = split_month_and_year(month_and_year)
@@ -26,13 +31,15 @@ def seperate_month_and_year_of_the_argument(month_and_year):
         return month,year
 
 
-def generate_file_path(year, month):
-    return f'weatherfiles/Murree_weather_{year}{month}.txt'
+def generate_file_path(command_line_arguments ):
+    year_and_month_list = get_month_and_year_from_argument(command_line_arguments['month_and_year'])
+
+    return f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year_and_month_list[1]}{year_and_month_list[0]}.txt'
 
 
-def get_the_average_temperatures(year_and_month_list, path):
+def get_the_average_temperatures( path):
 
-    if year_and_month_list[0] != 0 and os.path.exists(path):
+    if os.path.exists(path):
         read_file(path)
     else:
         print('invalid arguments format')

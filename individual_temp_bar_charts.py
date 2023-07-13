@@ -8,13 +8,10 @@ BLUE = '\033[34m'
 RESET = '\033[0m'
 
 def individual_bar_charts_for_highest_and_lowest_temperature_of_month():
-    month_and_year = read_arguments()
-    List_split = month_and_year.split('/')
-    month = find_month_name(int(List_split[1]))
-    year = List_split[0]
-    path = generate_file_path(year, month)
+    command_line_arguments = read_arguments()
+    path = generate_file_path(command_line_arguments)
 
-    if month != 0 and os.path.exists(path):
+    if os.path.exists(path):
         read_file(path)
     else:
         print('invalid arguments format')
@@ -23,8 +20,14 @@ def individual_bar_charts_for_highest_and_lowest_temperature_of_month():
 def read_arguments():
     arguments = sys.argv
 
-    if len(arguments) > 2:
-        return arguments[2]
+    if len(arguments) > 3:
+        command_line_arguments = {
+            'flag' : arguments[1],
+            'month_and_year' : arguments[2],
+            'file_path' : arguments[3]
+        }
+        return command_line_arguments
+
     
     
 def find_month_name(month_number):
@@ -50,8 +53,11 @@ def find_month_name(month_number):
     return MONTH_NAMES[month_number]
 
 
-def generate_file_path(year, month):
-    return f'weatherfiles/Murree_weather_{year}{month}.txt'
+def generate_file_path(command_line_arguments):
+    List_split = command_line_arguments['month_and_year'].split('/')
+    month = find_month_name(int(List_split[1]))
+    year = List_split[0]
+    return f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year}{month}.txt'
 
 
 def extract_temperatures_from_the_dataset_row(weather_data_of_single_row):
