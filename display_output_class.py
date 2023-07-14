@@ -60,14 +60,14 @@ class Display:
                 day['lowest_temperature'], 
                 self.BLUE
                 )
-            day_number+=1
+            day_number += 1
     
     def generate_bar_chart_for_each_value_individual(self, day_number,temperature_value, color):
 
         if temperature_value is not None:
             print(f'{day_number}: ', end = '')
             for idx in range(temperature_value):
-                print(f"{color}+{self.RESET}", end='')
+                print(f"{color}+{self.RESET}", end = '')
             print(f' {temperature_value}C')
         else:
             print(f'{day_number}: No Data ')
@@ -76,17 +76,17 @@ class Display:
         day_number = 1
         for day in all_month_temperature_values:
             self.generate_bar_chart_for_each_value_combined(day_number, day)
-            day_number+=1
+            day_number += 1
 
     def generate_bar_chart_for_each_value_combined(self, day_number, daily_temperature_values):
     
         if daily_temperature_values['highest_temperature'] is not None \
                 and daily_temperature_values['lowest_temperature'] is not None :
-            print(f'{day_number}: ', end='')
+            print(f'{day_number}: ', end = '')
             for idx in range(daily_temperature_values['lowest_temperature']):
-                print(f'{self.BLUE}+{self.RESET}', end='')
+                print(f'{self.BLUE}+{self.RESET}', end = '')
             for idx in range(daily_temperature_values['highest_temperature']):
-                print(f'{self.RED}+{self.RESET}', end='')
+                print(f'{self.RED}+{self.RESET}', end = '')
             print(f' {daily_temperature_values["lowest_temperature"]}C-{daily_temperature_values["highest_temperature"]}C')
         else:
             print(f'{day_number}: No Data ')
