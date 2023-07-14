@@ -6,24 +6,21 @@ from display_output_class import Display
 def main():
     arg = Argument()
     arg.get_command_line_arguments()
-    
-    check_flag_argument(arg.command_line_arguments)
+    check_flag_argument( arg.command_line_arguments)
 
 
-def check_flag_argument(command_line_arguments):
-
-    flag = command_line_arguments['flag']
+def check_flag_argument(arguments):
     parse = Parser()
     calculate = Calculator()
     displayer = Display()
 
-    if flag == '-e':
-        all_months_weather_values = parse.read_file_for_yearly_weather(command_line_arguments)
+    if arguments.e:
+        all_months_weather_values = parse.read_file_for_yearly_weather(arguments)
         yearly_temperature_values = calculate.get_yearly_weather_results(all_months_weather_values)
         displayer.display_yearly_results(yearly_temperature_values)
 
-    elif flag == '-a':
-        parse.generate_file_path(command_line_arguments)
+    elif arguments.a:
+        parse.generate_file_path( arguments)
 
         if parse.isPathExist():        
             all_daily_temperature_values = parse.read_file(parse.path)
@@ -32,9 +29,8 @@ def check_flag_argument(command_line_arguments):
         else:
             print('invalid arguments format')
 
-
-    elif flag == '-c':
-        parse.generate_file_path(command_line_arguments)
+    elif arguments.c:
+        parse.generate_file_path( arguments)
         
         if parse.isPathExist():            
             all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
@@ -42,8 +38,8 @@ def check_flag_argument(command_line_arguments):
         else:
             print('invalid arguments format')
 
-    elif flag == '-d':
-        parse.generate_file_path(command_line_arguments)
+    elif arguments.d:
+        parse.generate_file_path( arguments)
 
         if parse.isPathExist():            
             all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)

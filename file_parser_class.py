@@ -35,13 +35,13 @@ class Parser:
         
         return daily_temperature_values
 
-    def generate_file_path(self, command_line_arguments):
-        List_split = command_line_arguments['month_and_year'].split('/')
+    def generate_file_path(self, arguments):
+        List_split = arguments.date.split('/')
         month = self.find_month_name(int(List_split[1]))
         year = List_split[0]
 
         if int(year) > 0:
-            self.path = f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{year}{month}.txt'
+            self.path = f'{arguments.file_path}weatherfiles/Murree_weather_{year}{month}.txt'
         else :
             print('invalid year entered')
 
@@ -101,7 +101,7 @@ class Parser:
         return all_months_weather_values
     
     def get_files(self, command_line_arguments):
-        return glob.glob(f'{command_line_arguments["file_path"]}weatherfiles/Murree_weather_{command_line_arguments["month_and_year"]}_???.txt')
+        return glob.glob(f'{command_line_arguments.file_path}weatherfiles/Murree_weather_{command_line_arguments.date}_???.txt')
 
     def initialize_temperature_values(self):
         return {
