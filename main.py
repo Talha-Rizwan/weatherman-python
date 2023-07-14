@@ -1,27 +1,59 @@
-import sys
-
-from yearly_temperature import get_yearly_temperature_stats
-from monthly_temperature import get_monthly_average_temperature_stats
-from individual_temp_bar_charts import individual_bar_charts_for_highest_and_lowest_temperature_of_month
-from combined_temp_bar_chart import combined_bar_chart_for_highest_and_lowest_temperature_of_month
-
+from argument import Argument
+from parser_file import Parser
+from calculate_class import Calculator
+from display_output import Display
 
 def main():
-    check_flag_argument()
+    arg = Argument()
+
+    arg.get_command_line_arguments()
+    
+    check_flag_argument(arg.command_line_arguments)
 
 
-def check_flag_argument():
-    arguments = sys.argv
-    flag = arguments[1]
+def check_flag_argument(command_line_arguments):
+    flag = command_line_arguments['flag']
+    parse = Parser()
+    calculate = Calculator()
+    displayer = Display()
 
-    flag_dict = {
-        '-e': get_yearly_temperature_stats,
-        '-a': get_monthly_average_temperature_stats,
-        '-c': individual_bar_charts_for_highest_and_lowest_temperature_of_month,
-        '-d': combined_bar_chart_for_highest_and_lowest_temperature_of_month
-        }
+    if flag == '-e':
+        
+        all_months_weather_values = parse.read_file_for_yearly_weather(command_line_arguments)
+        yearly_temperature_values = calculate.get_yearly_weather_results(all_months_weather_values)
+        displayer.display_yearly_results(yearly_temperature_values)
 
-    flag_dict.get(flag, invalid_flag)()
+    elif flag == '-a':
+        parse.generate_file_path(command_line_arguments)
+
+        if parse.isPathExist():        
+            all_daily_temperature_values = parse.read_file(parse.path)
+            mean_result_values = calculate.get_the_sum_values(all_daily_temperature_values)
+            displayer.display_average_results(mean_result_values)
+        else:
+            print('invalid arguments format')
+
+
+    elif flag == '-c':
+        parse.generate_file_path(command_line_arguments)
+        
+        if parse.isPathExist():            
+            all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
+            displayer.generate_temperature_graph_for_individual_bars(all_month_temperature_values)
+        else:
+            print('invalid arguments format')
+
+    elif flag == '-d':
+        parse.generate_file_path(command_line_arguments)
+
+        if parse.isPathExist():            
+            all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
+            displayer.generate_temperature_graph_for_combined_bars(all_month_temperature_values)
+        else:
+            print('invalid arguments format')
+
+    else:
+        invalid_flag()
 
 
 def invalid_flag():
