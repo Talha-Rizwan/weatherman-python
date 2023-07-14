@@ -1,7 +1,7 @@
-from argument import Argument
-from parser_file import Parser
-from calculate_class import Calculator
-from display_output import Display
+from argument_class import Argument
+from file_parser_class import Parser
+from calculator_class import Calculator
+from display_output_class import Display
 
 def main():
     arg = Argument()
