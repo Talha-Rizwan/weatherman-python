@@ -5,20 +5,19 @@ from display_output_class import Display
 
 def main():
     arg = Argument()
-
     arg.get_command_line_arguments()
     
     check_flag_argument(arg.command_line_arguments)
 
 
 def check_flag_argument(command_line_arguments):
+
     flag = command_line_arguments['flag']
     parse = Parser()
     calculate = Calculator()
     displayer = Display()
 
     if flag == '-e':
-        
         all_months_weather_values = parse.read_file_for_yearly_weather(command_line_arguments)
         yearly_temperature_values = calculate.get_yearly_weather_results(all_months_weather_values)
         displayer.display_yearly_results(yearly_temperature_values)
