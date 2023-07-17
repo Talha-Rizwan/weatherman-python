@@ -4,7 +4,7 @@ import argparse
 class Argument:
 
     def __init__(self):
-        self.command_line_arguments = None    
+        self.command_line_arguments = None
 
     def get_command_line_arguments(self):
 

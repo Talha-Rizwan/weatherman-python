@@ -22,7 +22,7 @@ def check_flag_argument(arguments):
     elif arguments.a:
         parse.generate_file_path( arguments)
 
-        if parse.isPathExist():        
+        if parse.isPathExist():
             daily_temperatures = parse.read_file(parse.path)
             mean_temperature = calculate.get_sum_values(daily_temperatures)
             displayer.display_average_results(mean_temperature)
@@ -31,8 +31,8 @@ def check_flag_argument(arguments):
 
     elif arguments.c:
         parse.generate_file_path( arguments)
-        
-        if parse.isPathExist():            
+
+        if parse.isPathExist():
             all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
             displayer.generate_bar_chart_for_individual_temperature(all_month_temperature_values)
         else:
@@ -41,7 +41,7 @@ def check_flag_argument(arguments):
     elif arguments.d:
         parse.generate_file_path( arguments)
 
-        if parse.isPathExist():            
+        if parse.isPathExist():
             all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
             displayer.generate_bar_chart_for_combined_temperature(all_month_temperature_values)
         else:
@@ -53,7 +53,7 @@ def check_flag_argument(arguments):
 
 def invalid_flag():
     print('Flag is incorrect!')
-    
+
 
 if __name__ == '__main__':
     main()
