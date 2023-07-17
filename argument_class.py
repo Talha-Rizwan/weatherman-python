@@ -14,7 +14,8 @@ class Argument:
         parser.add_argument('-c', action = 'store_true', help = 'Optional flag')
         parser.add_argument('-d', action = 'store_true', help = 'Optional flag')
 
-        parser.add_argument('date', help = 'First argument')
-        parser.add_argument('file_path', help = 'Second argument')
+        parser.add_argument('date', help = 'Date argument')
+        parser.add_argument('file_path', help = 'File path argument')
 
         self.command_line_arguments = parser.parse_args()
+        

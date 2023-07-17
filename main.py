@@ -23,9 +23,9 @@ def check_flag_argument(arguments):
         parse.generate_file_path( arguments)
 
         if parse.isPathExist():        
-            all_daily_temperature_values = parse.read_file(parse.path)
-            mean_result_values = calculate.get_the_sum_values(all_daily_temperature_values)
-            displayer.display_average_results(mean_result_values)
+            daily_temperatures = parse.read_file(parse.path)
+            mean_temperature = calculate.get_sum_values(daily_temperatures)
+            displayer.display_average_results(mean_temperature)
         else:
             print('invalid arguments format')
 
@@ -34,7 +34,7 @@ def check_flag_argument(arguments):
         
         if parse.isPathExist():            
             all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
-            displayer.generate_temperature_graph_for_individual_bars(all_month_temperature_values)
+            displayer.generate_bar_chart_for_individual_temperature(all_month_temperature_values)
         else:
             print('invalid arguments format')
 
@@ -43,7 +43,7 @@ def check_flag_argument(arguments):
 
         if parse.isPathExist():            
             all_month_temperature_values = parse.read_file_for_bar_chart(parse.path)
-            displayer.generate_temperature_graph_for_combined_bars(all_month_temperature_values)
+            displayer.generate_bar_chart_for_combined_temperature(all_month_temperature_values)
         else:
             print('invalid arguments format')
 
@@ -52,7 +52,7 @@ def check_flag_argument(arguments):
 
 
 def invalid_flag():
-    print('The flag entered is incorrect!')
+    print('Flag is incorrect!')
     
 
 if __name__ == '__main__':

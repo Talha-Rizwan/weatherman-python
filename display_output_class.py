@@ -1,3 +1,5 @@
+from constants import MONTH_NAMES, HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, MAXIMUM_HUMIDITY_MEAN, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN, DATE, VALUE
+
 
 class Display:
     def __init__(self):
@@ -7,34 +9,20 @@ class Display:
 
     def display_yearly_results(self, yearly_temperature_values):
     
-        if yearly_temperature_values['highest_temperature']['date'] is not None \
-                and yearly_temperature_values['lowest_temperature']['date'] is not None \
-                    and yearly_temperature_values['maximum_humidity']['date'] is not None:
-            print(f'Highest: {yearly_temperature_values["highest_temperature"]["value"]}C on {self.set_date_to_correct_display_format(yearly_temperature_values["highest_temperature"]["date"]) } ')
-            print(f'Lowest: {yearly_temperature_values["lowest_temperature"]["value"]}C on {self.set_date_to_correct_display_format(yearly_temperature_values["lowest_temperature"]["date"])} ')
-            print(f'Humid: {yearly_temperature_values["maximum_humidity"]["value"]}C on {self.set_date_to_correct_display_format(yearly_temperature_values["maximum_humidity"]["date"])} ')
+        if yearly_temperature_values[HIGHEST_TEMPERATURE][DATE] is not None \
+                and yearly_temperature_values[LOWEST_TEMPERATURE][DATE] is not None \
+                    and yearly_temperature_values[MAXIMUM_HUMIDITY][DATE] is not None:
+            print(f'Highest: {yearly_temperature_values[HIGHEST_TEMPERATURE][VALUE]}C on {self.set_to_correct_date_format(yearly_temperature_values[HIGHEST_TEMPERATURE][DATE]) } ')
+            print(f'Lowest: {yearly_temperature_values[LOWEST_TEMPERATURE][VALUE]}C on {self.set_to_correct_date_format(yearly_temperature_values[LOWEST_TEMPERATURE][DATE])} ')
+            print(f'Humid: {yearly_temperature_values[MAXIMUM_HUMIDITY][VALUE]}C on {self.set_to_correct_date_format(yearly_temperature_values[MAXIMUM_HUMIDITY][DATE])} ')
         else:
             print('no data to display')
     
-    def set_date_to_correct_display_format(self, date):
+    def set_to_correct_date_format(self, date):
         date_components = date.split('-')
         return f'{self.find_month_name(int(date_components[1])).replace("_", "")} {date_components[2]}'
     
     def find_month_name(self, month_number):
-        MONTH_NAMES = {
-            1: '_Jan',
-            2: '_Feb',
-            3: '_Mar',
-            4: '_Apr',
-            5: '_May',
-            6: '_Jun',
-            7: '_Jul',
-            8: '_Aug',
-            9: '_Sep',
-            10: '_Oct',
-            11: '_Nov',
-            12: '_Dec'
-        }
 
         if month_number < 1 or month_number > 12:
             print('Invalid input format entered')
@@ -42,51 +30,50 @@ class Display:
 
         return MONTH_NAMES[month_number]
 
-    def display_average_results(self, mean_result_values):
-        print(f'Highest Average: {mean_result_values["highest_temperature_mean"]}C')
-        print(f'Lowest Average: {mean_result_values["lowest_temperature_mean"]}C')
-        print(f'Average Humidty: {mean_result_values["maximum_humidity_mean"]}%')
+    def display_average_results(self, mean_temperature):
+        print(f'Highest Average: {mean_temperature[HIGHEST_TEMPERATURE_MEAN]}C')
+        print(f'Lowest Average: {mean_temperature[LOWEST_TEMPERATURE_MEAN]}C')
+        print(f'Average Humidty: {mean_temperature[MAXIMUM_HUMIDITY_MEAN]}%')
 
-    def generate_temperature_graph_for_individual_bars(self, all_month_temperature_values):
+    def generate_bar_chart_for_individual_temperature(self, all_month_temperature_values):
         day_number = 1
         for day in all_month_temperature_values:
-            self.generate_bar_chart_for_each_value_individual(
+            self.generate_bar_chart_for_each_temperature(
                 day_number, 
-                day['highest_temperature'], 
+                day[HIGHEST_TEMPERATURE], 
                 self.RED
                 )
-            self.generate_bar_chart_for_each_value_individual(
+            self.generate_bar_chart_for_each_temperature(
                 day_number, 
-                day['lowest_temperature'], 
+                day[LOWEST_TEMPERATURE], 
                 self.BLUE
                 )
             day_number += 1
     
-    def generate_bar_chart_for_each_value_individual(self, day_number,temperature_value, color):
+    def generate_bar_chart_for_each_temperature(self, day_number,temperature_value, color):
 
         if temperature_value is not None:
-            print(f'{day_number}: ', end = '')
-            for idx in range(temperature_value):
-                print(f"{color}+{self.RESET}", end = '')
-            print(f' {temperature_value}C')
+            print(str(day_number) + ": ", end='')
+            print(color + "+" + self.RESET, end='' * temperature_value)
+            print(" " + str(temperature_value) + "C")
         else:
             print(f'{day_number}: No Data ')
 
-    def generate_temperature_graph_for_combined_bars(self, all_month_temperature_values):
+    def generate_bar_chart_for_combined_temperature(self, all_month_temperature_values):
         day_number = 1
         for day in all_month_temperature_values:
-            self.generate_bar_chart_for_each_value_combined(day_number, day)
+            self.generate_bar_chart_for_each_value_of_combined(day_number, day)
             day_number += 1
 
-    def generate_bar_chart_for_each_value_combined(self, day_number, daily_temperature_values):
+    def generate_bar_chart_for_each_value_of_combined(self, day_number, daily_temperature_values):
     
-        if daily_temperature_values['highest_temperature'] is not None \
-                and daily_temperature_values['lowest_temperature'] is not None :
+        if daily_temperature_values[HIGHEST_TEMPERATURE] is not None \
+                and daily_temperature_values[LOWEST_TEMPERATURE] is not None :
             print(f'{day_number}: ', end = '')
-            for idx in range(daily_temperature_values['lowest_temperature']):
+            for idx in range(daily_temperature_values[LOWEST_TEMPERATURE]):
                 print(f'{self.BLUE}+{self.RESET}', end = '')
-            for idx in range(daily_temperature_values['highest_temperature']):
+            for idx in range(daily_temperature_values[HIGHEST_TEMPERATURE]):
                 print(f'{self.RED}+{self.RESET}', end = '')
-            print(f' {daily_temperature_values["lowest_temperature"]}C-{daily_temperature_values["highest_temperature"]}C')
+            print(f' {daily_temperature_values[LOWEST_TEMPERATURE]}C-{daily_temperature_values[HIGHEST_TEMPERATURE]}C')
         else:
             print(f'{day_number}: No Data ')
