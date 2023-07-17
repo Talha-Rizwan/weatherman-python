@@ -12,9 +12,9 @@ class Calculator :
 
     def initialize_temperature_sum(self):
         return {
-            HIGHEST_TEMPERATURE : {SUM : 0, COUNT : 0 },
-            LOWEST_TEMPERATURE : {SUM : 0, COUNT : 0 },
-            MAXIMUM_HUMIDITY : {SUM : 0, COUNT : 0 }
+            HIGHEST_TEMPERATURE: {SUM: 0, COUNT: 0 },
+            LOWEST_TEMPERATURE: {SUM: 0, COUNT: 0 },
+            MAXIMUM_HUMIDITY: {SUM: 0, COUNT: 0 }
         }
 
     def compute_sum_of_rows(self, temperature_sum, daily_temperature):
@@ -63,9 +63,9 @@ class Calculator :
 
     def initialize_mean_temperature(self):
         return {
-                HIGHEST_TEMPERATURE_MEAN : 0,
-                LOWEST_TEMPERATURE_MEAN :0,
-                MAXIMUM_HUMIDITY_MEAN : 0
+                HIGHEST_TEMPERATURE_MEAN: 0,
+                LOWEST_TEMPERATURE_MEAN:0,
+                MAXIMUM_HUMIDITY_MEAN: 0
             }
 
     def calculate_mean(self, sum, count):
@@ -84,9 +84,9 @@ class Calculator :
 
     def initialize_temperature_values(self):
         return {
-            HIGHEST_TEMPERATURE : {VALUE : -math.inf, DATE : None },
-            LOWEST_TEMPERATURE : {VALUE : math.inf, DATE : None },
-            MAXIMUM_HUMIDITY : {VALUE : -math.inf, DATE : None }
+            HIGHEST_TEMPERATURE: {VALUE: -math.inf, DATE: None },
+            LOWEST_TEMPERATURE: {VALUE: math.inf, DATE: None },
+            MAXIMUM_HUMIDITY: {VALUE: -math.inf, DATE: None }
         }
 
     def compare_monthly_with_yearly_weather_values(self, monthly_temperature,

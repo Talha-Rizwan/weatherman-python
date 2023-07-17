@@ -1,9 +1,9 @@
 import csv
 import glob
 import math
-import os
+import calendar
 
-from constants import MONTH_NAMES, HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, DATE, VALUE, MAX_TEMPERATURE, MIN_TEMPERATURE, MEAN_HUMIDITY, DATE_OF_THE_DAY
+from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, DATE, VALUE, MAX_TEMPERATURE, MIN_TEMPERATURE, MEAN_HUMIDITY, DATE_OF_THE_DAY
 
 
 class Parser:
@@ -22,8 +22,8 @@ class Parser:
 
     def extract_temperature_from_row(self, weather_data_of_single_row):
         daily_temperature = {
-                    HIGHEST_TEMPERATURE : 0,
-                    LOWEST_TEMPERATURE : 0,
+                    HIGHEST_TEMPERATURE: 0,
+                    LOWEST_TEMPERATURE: 0,
                 }
 
         if weather_data_of_single_row[MAX_TEMPERATURE] != '':
@@ -38,27 +38,6 @@ class Parser:
 
         return daily_temperature
 
-    def generate_file_path(self, arguments):
-        List_split = arguments.date.split('/')
-        month = self.find_month_name(int(List_split[1]))
-        year = List_split[0]
-
-        if int(year) > 0:
-            self.path = f'{arguments.file_path}weatherfiles/Murree_weather_{year}{month}.txt'
-        else :
-            print('invalid year entered')
-
-    def isPathExist(self):
-        return os.path.exists(self.path)
-
-    def find_month_name(self, month_number):
-
-        if month_number < 1 or month_number > 12:
-            print('Invalid input format entered')
-            return 0
-
-        return MONTH_NAMES[month_number]
-
     def read_file(self, file_path):
         all_daily_temperature = []
         with open(file_path) as file:
@@ -71,9 +50,9 @@ class Parser:
 
     def extract_required_weatherdata_from_dataset(self, weather_data_of_single_row):
         return {
-            HIGHEST_TEMPERATURE : weather_data_of_single_row[MAX_TEMPERATURE],
-            LOWEST_TEMPERATURE : weather_data_of_single_row[MIN_TEMPERATURE],
-            MAXIMUM_HUMIDITY : weather_data_of_single_row[MEAN_HUMIDITY],
+            HIGHEST_TEMPERATURE: weather_data_of_single_row[MAX_TEMPERATURE],
+            LOWEST_TEMPERATURE: weather_data_of_single_row[MIN_TEMPERATURE],
+            MAXIMUM_HUMIDITY: weather_data_of_single_row[MEAN_HUMIDITY],
         }
 
     def read_file_for_yearly_weather(self, command_line_arguments):
@@ -90,43 +69,75 @@ class Parser:
     def get_files(self, command_line_arguments):
         return glob.glob(f'{command_line_arguments.file_path}weatherfiles/Murree_weather_{command_line_arguments.date}_???.txt')
 
+    def get_file_path(self, arguments):
+        List_split = arguments.date.split('/')
+        month = calendar.month_name[int(List_split[1])]
+        year = List_split[0]
+
+        if int(year) > 0:
+            self.path = glob.glob(f'{arguments.file_path}weatherfiles/Murree_weather_{year}_{month[:3]}.txt')
+        else :
+            print('invalid year entered')
+
     def initialize_temperature_values(self):
         return {
-            HIGHEST_TEMPERATURE : {VALUE : -math.inf, DATE : None },
-            LOWEST_TEMPERATURE : {VALUE : math.inf, DATE : None },
-            MAXIMUM_HUMIDITY : {VALUE : -math.inf, DATE : None }
+            HIGHEST_TEMPERATURE: {VALUE: -math.inf, DATE: None },
+            LOWEST_TEMPERATURE: {VALUE: math.inf, DATE: None },
+            MAXIMUM_HUMIDITY: {VALUE: -math.inf, DATE: None }
         }
 
     def read_file_line_by_line(self, all_rows_data, monthly_temperature):
         for weather_data_of_single_row in all_rows_data:
-            daily_temperature = self.extract_required_weatherdata_from_dataset_of_yearly \
-                                                                (weather_data_of_single_row)
-            self.compare_daily_with_monthly_weather_values(daily_temperature,
-                                                    monthly_temperature)
+            daily_temperature = self.extract_required_weatherdata_from_dataset_of_yearly(
+                weather_data_of_single_row
+                )
+            self.get_monthly_weather_data(
+                daily_temperature,
+                monthly_temperature
+                )
+            
         return monthly_temperature
 
     def extract_required_weatherdata_from_dataset_of_yearly(self, weather_data_of_single_row):
-        return  {
-                HIGHEST_TEMPERATURE : int(weather_data_of_single_row[MAX_TEMPERATURE]),
-                LOWEST_TEMPERATURE : int(weather_data_of_single_row[MIN_TEMPERATURE]),
-                MAXIMUM_HUMIDITY : int(weather_data_of_single_row[MEAN_HUMIDITY]),
-                DATE_OF_THE_DAY : weather_data_of_single_row['PKT']
+        
+        if weather_data_of_single_row[MAX_TEMPERATURE] == '' or weather_data_of_single_row[MIN_TEMPERATURE] == '' or weather_data_of_single_row[MEAN_HUMIDITY] == '':
+            return None
+
+        if 'PKT' in weather_data_of_single_row.keys():
+          return  {
+                HIGHEST_TEMPERATURE: int(weather_data_of_single_row[MAX_TEMPERATURE]),
+                LOWEST_TEMPERATURE: int(weather_data_of_single_row[MIN_TEMPERATURE]),
+                MAXIMUM_HUMIDITY: int(weather_data_of_single_row[MEAN_HUMIDITY]),
+                DATE_OF_THE_DAY: weather_data_of_single_row['PKT']
+            }              
+        else :
+            return  {
+                HIGHEST_TEMPERATURE: int(weather_data_of_single_row[MAX_TEMPERATURE]),
+                LOWEST_TEMPERATURE: int(weather_data_of_single_row[MIN_TEMPERATURE]),
+                MAXIMUM_HUMIDITY: int(weather_data_of_single_row[MEAN_HUMIDITY]),
+                DATE_OF_THE_DAY: weather_data_of_single_row['PKST']
             }
 
-    def compare_daily_with_monthly_weather_values(self, daily_temperature, monthly_temperature):
-        self.compare_temperature_for_single_attribute_of_daily_to_monthly(
-            daily_temperature,
-            monthly_temperature,
-            HIGHEST_TEMPERATURE
-        )
-        self.compare_temperature_for_single_attribute_of_daily_to_monthly(daily_temperature,
-                                                                    monthly_temperature,
-                                                                    LOWEST_TEMPERATURE)
-        self.compare_temperature_for_single_attribute_of_daily_to_monthly(daily_temperature,
-                                                                    monthly_temperature,
-                                                                    MAXIMUM_HUMIDITY)
 
-    def compare_temperature_for_single_attribute_of_daily_to_monthly(
+    def get_monthly_weather_data(self, daily_temperature, monthly_temperature):
+        if daily_temperature is not None:
+            self.compare_single_attribute_temperature(
+                daily_temperature,
+                monthly_temperature,
+                HIGHEST_TEMPERATURE
+            )
+            self.compare_single_attribute_temperature(
+                daily_temperature,
+                monthly_temperature,
+                LOWEST_TEMPERATURE
+                )
+            self.compare_single_attribute_temperature(
+                daily_temperature,
+                monthly_temperature,
+                MAXIMUM_HUMIDITY
+                )
+
+    def compare_single_attribute_temperature(
             self, daily_temperature,
             monthly_temperature,
             key_attribute

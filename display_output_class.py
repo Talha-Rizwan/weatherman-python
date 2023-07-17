@@ -1,4 +1,5 @@
-from constants import MONTH_NAMES, HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, MAXIMUM_HUMIDITY_MEAN, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN, DATE, VALUE
+import calendar
+from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, MAXIMUM_HUMIDITY_MEAN, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN, DATE, VALUE
 
 
 class Display:
@@ -20,22 +21,16 @@ class Display:
 
     def set_to_correct_date_format(self, date):
         date_components = date.split('-')
-        return f'{self.find_month_name(int(date_components[1])).replace("_", "")} {date_components[2]}'
-
-    def find_month_name(self, month_number):
-
-        if month_number < 1 or month_number > 12:
-            print('Invalid input format entered')
-            return 0
-
-        return MONTH_NAMES[month_number]
-
+        return f'{calendar.month_name[int(date_components[1])][:3]} {date_components[2]}'
+    
     def display_average_results(self, mean_temperature):
         print(f'Highest Average: {mean_temperature[HIGHEST_TEMPERATURE_MEAN]}C')
         print(f'Lowest Average: {mean_temperature[LOWEST_TEMPERATURE_MEAN]}C')
         print(f'Average Humidty: {mean_temperature[MAXIMUM_HUMIDITY_MEAN]}%')
 
-    def generate_bar_chart_for_individual_temperature(self, all_month_temperature_values):
+    def generate_bar_chart_for_individual_temperature(self, all_month_temperature_values, arguments):
+        List_split = arguments.date.split('/')
+        print(f'{calendar.month_name[int(List_split[1])]} {List_split[0]}') 
         day_number = 1
         for day in all_month_temperature_values:
             self.generate_bar_chart_for_each_temperature(
@@ -54,10 +49,10 @@ class Display:
 
         if temperature_value is not None:
             print(f'{day_number}: {color}{"+" * temperature_value}{self.text_color} {temperature_value}C')
-        else:
-            print(f'{day_number}: No Data ')
 
-    def generate_bar_chart_for_combined_temperature(self, all_month_temperature_values):
+    def generate_bar_chart_for_combined_temperature(self, all_month_temperature_values, arguments):
+        List_split = arguments.date.split('/')
+        print(f'{calendar.month_name[int(List_split[1])]} {List_split[0]}') 
         day_number = 1
         for day in all_month_temperature_values:
             self.generate_bar_chart_for_each_value_of_combined(day_number, day)
@@ -68,5 +63,4 @@ class Display:
         if daily_temperature_values[HIGHEST_TEMPERATURE] is not None \
                 and daily_temperature_values[LOWEST_TEMPERATURE] is not None :
             print(f'{day_number}: {self.low_temperature_color}{"+" * daily_temperature_values[LOWEST_TEMPERATURE]}{self.high_temperature_color}{"+" * daily_temperature_values[HIGHEST_TEMPERATURE]}{self.text_color} {daily_temperature_values[LOWEST_TEMPERATURE]}C-{daily_temperature_values[HIGHEST_TEMPERATURE]}C')
-        else:
-            print(f'{day_number}: No Data ')
+        

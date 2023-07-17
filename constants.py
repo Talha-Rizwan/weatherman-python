@@ -1,18 +1,3 @@
-MONTH_NAMES = {
-    1: '_Jan',
-    2: '_Feb',
-    3: '_Mar',
-    4: '_Apr',
-    5: '_May',
-    6: '_Jun',
-    7: '_Jul',
-    8: '_Aug',
-    9: '_Sep',
-    10: '_Oct',
-    11: '_Nov',
-    12: '_Dec'
-}
-
 HIGHEST_TEMPERATURE = 'highest_temperature'
 LOWEST_TEMPERATURE = 'lowest_temperature'
 MAXIMUM_HUMIDITY = 'maximum_humidity'
