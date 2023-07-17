@@ -53,9 +53,7 @@ class Display:
     def generate_bar_chart_for_each_temperature(self, day_number,temperature_value, color):
 
         if temperature_value is not None:
-            print(str(day_number) + ": ", end='')
-            print(color + "+" + self.RESET, end='' * temperature_value)
-            print(" " + str(temperature_value) + "C")
+            print(f'{day_number}: {color}{"+" * temperature_value}{self.RESET} {temperature_value}C')
         else:
             print(f'{day_number}: No Data ')
 
@@ -69,11 +67,6 @@ class Display:
     
         if daily_temperature_values[HIGHEST_TEMPERATURE] is not None \
                 and daily_temperature_values[LOWEST_TEMPERATURE] is not None :
-            print(f'{day_number}: ', end = '')
-            for idx in range(daily_temperature_values[LOWEST_TEMPERATURE]):
-                print(f'{self.BLUE}+{self.RESET}', end = '')
-            for idx in range(daily_temperature_values[HIGHEST_TEMPERATURE]):
-                print(f'{self.RED}+{self.RESET}', end = '')
-            print(f' {daily_temperature_values[LOWEST_TEMPERATURE]}C-{daily_temperature_values[HIGHEST_TEMPERATURE]}C')
+            print(f'{day_number}: {self.BLUE}{"+" * daily_temperature_values[LOWEST_TEMPERATURE]}{self.RED}{"+" * daily_temperature_values[HIGHEST_TEMPERATURE]}{self.RESET} {daily_temperature_values[LOWEST_TEMPERATURE]}C-{daily_temperature_values[HIGHEST_TEMPERATURE]}C')
         else:
             print(f'{day_number}: No Data ')
