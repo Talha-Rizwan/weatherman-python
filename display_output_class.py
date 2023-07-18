@@ -1,5 +1,7 @@
 import calendar
-from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, MAXIMUM_HUMIDITY_MEAN, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN, DATE, VALUE
+from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY
+from constants import MAXIMUM_HUMIDITY_MEAN, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN
+from constants import DATE, VALUE
 
 
 class Display:
@@ -13,24 +15,31 @@ class Display:
         if yearly_temperature_values[HIGHEST_TEMPERATURE][DATE] is not None \
                 and yearly_temperature_values[LOWEST_TEMPERATURE][DATE] is not None \
                     and yearly_temperature_values[MAXIMUM_HUMIDITY][DATE] is not None:
-            print(f'Highest: {yearly_temperature_values[HIGHEST_TEMPERATURE][VALUE]}C on {self.set_to_correct_date_format(yearly_temperature_values[HIGHEST_TEMPERATURE][DATE]) } ')
-            print(f'Lowest: {yearly_temperature_values[LOWEST_TEMPERATURE][VALUE]}C on {self.set_to_correct_date_format(yearly_temperature_values[LOWEST_TEMPERATURE][DATE])} ')
-            print(f'Humid: {yearly_temperature_values[MAXIMUM_HUMIDITY][VALUE]}C on {self.set_to_correct_date_format(yearly_temperature_values[MAXIMUM_HUMIDITY][DATE])} ')
+            print(f'Highest: {yearly_temperature_values[HIGHEST_TEMPERATURE][VALUE]}C on ' +
+                  f'{self.to_date_format(yearly_temperature_values[HIGHEST_TEMPERATURE][DATE])}')
+            print(f'Lowest: {yearly_temperature_values[LOWEST_TEMPERATURE][VALUE]}C on '+
+                  f'{self.to_date_format(yearly_temperature_values[LOWEST_TEMPERATURE][DATE])}')
+            print(f'Humid: {yearly_temperature_values[MAXIMUM_HUMIDITY][VALUE]}C on ' +
+                  f'{self.to_date_format(yearly_temperature_values[MAXIMUM_HUMIDITY][DATE])}')
         else:
             print('no data to display')
 
-    def set_to_correct_date_format(self, date):
+    def to_date_format(self, date):
         date_components = date.split('-')
         return f'{calendar.month_name[int(date_components[1])][:3]} {date_components[2]}'
-    
+
     def display_average_results(self, mean_temperature):
         print(f'Highest Average: {mean_temperature[HIGHEST_TEMPERATURE_MEAN]}C')
         print(f'Lowest Average: {mean_temperature[LOWEST_TEMPERATURE_MEAN]}C')
         print(f'Average Humidty: {mean_temperature[MAXIMUM_HUMIDITY_MEAN]}%')
 
-    def generate_bar_chart_for_individual_temperature(self, all_month_temperature_values, arguments):
-        List_split = arguments.date.split('/')
-        print(f'{calendar.month_name[int(List_split[1])]} {List_split[0]}') 
+    def generate_bar_chart_for_individual_temperature(
+            self,
+            all_month_temperature_values,
+            arguments
+            ):
+        list_split = arguments.date.split('/')
+        print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
         day_number = 1
         for day in all_month_temperature_values:
             self.generate_bar_chart_for_each_temperature(
@@ -48,11 +57,12 @@ class Display:
     def generate_bar_chart_for_each_temperature(self, day_number,temperature_value, color):
 
         if temperature_value is not None:
-            print(f'{day_number}: {color}{"+" * temperature_value}{self.text_color} {temperature_value}C')
+            print(f'{day_number}: {color}{"+" * temperature_value}' +
+                  f'{self.text_color} {temperature_value}C')
 
     def generate_bar_chart_for_combined_temperature(self, all_month_temperature_values, arguments):
-        List_split = arguments.date.split('/')
-        print(f'{calendar.month_name[int(List_split[1])]} {List_split[0]}') 
+        list_split = arguments.date.split('/')
+        print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
         day_number = 1
         for day in all_month_temperature_values:
             self.generate_bar_chart_for_each_value_of_combined(day_number, day)
@@ -62,5 +72,9 @@ class Display:
 
         if daily_temperature_values[HIGHEST_TEMPERATURE] is not None \
                 and daily_temperature_values[LOWEST_TEMPERATURE] is not None :
-            print(f'{day_number}: {self.low_temperature_color}{"+" * daily_temperature_values[LOWEST_TEMPERATURE]}{self.high_temperature_color}{"+" * daily_temperature_values[HIGHEST_TEMPERATURE]}{self.text_color} {daily_temperature_values[LOWEST_TEMPERATURE]}C-{daily_temperature_values[HIGHEST_TEMPERATURE]}C')
-        
+            print(f'{day_number}: {self.low_temperature_color}' +
+                  f'{"+" * daily_temperature_values[LOWEST_TEMPERATURE]}' +
+                  f'{self.high_temperature_color}' +
+                  f'{"+" * daily_temperature_values[HIGHEST_TEMPERATURE]}' +
+                  f'{self.text_color} {daily_temperature_values[LOWEST_TEMPERATURE]}C-' +
+                  f'{daily_temperature_values[HIGHEST_TEMPERATURE]}C')

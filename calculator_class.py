@@ -1,21 +1,20 @@
 import math
-from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN, MAXIMUM_HUMIDITY_MEAN, SUM, COUNT, VALUE, DATE
+from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY
+from constants import HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN, MAXIMUM_HUMIDITY_MEAN
+from constants import SUM, COUNT, VALUE, DATE
 
 class Calculator :
     def get_sum_values(self, daily_temperatures):
-        temperature_sum = self.initialize_temperature_sum()
+        temperature_sum = {
+            HIGHEST_TEMPERATURE: {SUM: 0, COUNT: 0 },
+            LOWEST_TEMPERATURE: {SUM: 0, COUNT: 0 },
+            MAXIMUM_HUMIDITY: {SUM: 0, COUNT: 0 }
+        }
 
         for daily_temperature in daily_temperatures:
             self.compute_sum_of_rows(temperature_sum, daily_temperature)
 
         return self.calculate_mean_temperatures(temperature_sum)
-
-    def initialize_temperature_sum(self):
-        return {
-            HIGHEST_TEMPERATURE: {SUM: 0, COUNT: 0 },
-            LOWEST_TEMPERATURE: {SUM: 0, COUNT: 0 },
-            MAXIMUM_HUMIDITY: {SUM: 0, COUNT: 0 }
-        }
 
     def compute_sum_of_rows(self, temperature_sum, daily_temperature):
         self.compute_sum_of_single_attribute(
@@ -46,7 +45,12 @@ class Calculator :
             temperature_sum[key_attribute][COUNT] += 1
 
     def calculate_mean_temperatures(self, temperature_sum):
-        mean_temperature = self.initialize_mean_temperature()
+        mean_temperature = {
+                HIGHEST_TEMPERATURE_MEAN: 0,
+                LOWEST_TEMPERATURE_MEAN:0,
+                MAXIMUM_HUMIDITY_MEAN: 0
+            }
+        
         mean_temperature[HIGHEST_TEMPERATURE_MEAN] = self.calculate_mean(
             temperature_sum[HIGHEST_TEMPERATURE][SUM],
             temperature_sum[HIGHEST_TEMPERATURE][COUNT]
@@ -61,33 +65,25 @@ class Calculator :
             )
         return mean_temperature
 
-    def initialize_mean_temperature(self):
-        return {
-                HIGHEST_TEMPERATURE_MEAN: 0,
-                LOWEST_TEMPERATURE_MEAN:0,
-                MAXIMUM_HUMIDITY_MEAN: 0
-            }
-
-    def calculate_mean(self, sum, count):
+    def calculate_mean(self, total_sum, count):
         if count > 0:
-            return int(sum / count)
+            return int(total_sum / count)
         print("no data available")
         return None
 
     def get_yearly_weather_results(self, monthly_temperatures):
-        yearly_temperature = self.initialize_temperature_values()
-
-        for month_weather_values in monthly_temperatures:
-            self.compare_monthly_with_yearly_weather_values(month_weather_values, yearly_temperature)
-
-        return yearly_temperature
-
-    def initialize_temperature_values(self):
-        return {
+        yearly_temperature = {
             HIGHEST_TEMPERATURE: {VALUE: -math.inf, DATE: None },
             LOWEST_TEMPERATURE: {VALUE: math.inf, DATE: None },
             MAXIMUM_HUMIDITY: {VALUE: -math.inf, DATE: None }
         }
+        for month_weather_values in monthly_temperatures:
+            self.compare_monthly_with_yearly_weather_values(
+                month_weather_values,
+                yearly_temperature
+                )
+
+        return yearly_temperature
 
     def compare_monthly_with_yearly_weather_values(self, monthly_temperature,
                                                yearly_temperature ):
@@ -103,7 +99,8 @@ class Calculator :
             self,
             monthly_temperature,
             yearly_temperature,
-            key_attribute):
+            key_attribute
+            ):
 
         if key_attribute == LOWEST_TEMPERATURE:
             if monthly_temperature[key_attribute][VALUE] \
