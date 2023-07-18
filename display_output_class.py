@@ -38,21 +38,25 @@ class Display:
             month_temperature,
             arguments
             ):
-        list_split = arguments.date.split('/')
-        print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
-        day_number = 1
-        for day in month_temperature:
-            self.generate_bar_chart_for_each_temperature(
-                day_number,
-                day[HIGHEST_TEMPERATURE],
-                self.high_temperature_color
-                )
-            self.generate_bar_chart_for_each_temperature(
-                day_number,
-                day[LOWEST_TEMPERATURE],
-                self.low_temperature_color
-                )
-            day_number += 1
+        try:
+            list_split = arguments.date.split('/')
+            print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
+            day_number = 1
+            for day in month_temperature:
+                self.generate_bar_chart_for_each_temperature(
+                    day_number,
+                    day[HIGHEST_TEMPERATURE],
+                    self.high_temperature_color
+                    )
+                self.generate_bar_chart_for_each_temperature(
+                    day_number,
+                    day[LOWEST_TEMPERATURE],
+                    self.low_temperature_color
+                    )
+                day_number += 1
+        except Exception as e:
+            print(f'Error occured while processing the date: {e}')
+
 
     def generate_bar_chart_for_each_temperature(self, day_number,temperature, color):
 
@@ -61,12 +65,16 @@ class Display:
                   f'{self.text_color} {temperature}C')
 
     def generate_bar_chart_for_combined_temperature(self, month_temperature, arguments):
-        list_split = arguments.date.split('/')
-        print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
-        day_number = 1
-        for day in month_temperature:
-            self.generate_bar_chart_for_each_value_of_combined(day_number, day)
-            day_number += 1
+        try:
+            list_split = arguments.date.split('/')
+            print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
+            day_number = 1
+            for day in month_temperature:
+                self.generate_bar_chart_for_each_value_of_combined(day_number, day)
+                day_number += 1
+        except Exception as e:
+            print(f'Error occured while processing the date: {e}')
+
 
     def generate_bar_chart_for_each_value_of_combined(self, day_number, daily_temperature):
 
