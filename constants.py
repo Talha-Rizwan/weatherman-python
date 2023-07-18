@@ -1,3 +1,5 @@
+"""Constants for the program"""
+
 HIGHEST_TEMPERATURE = 'highest_temperature'
 LOWEST_TEMPERATURE = 'lowest_temperature'
 MAXIMUM_HUMIDITY = 'maximum_humidity'

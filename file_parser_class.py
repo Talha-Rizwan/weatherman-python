@@ -1,3 +1,4 @@
+"""All the file reading is performed here"""
 import csv
 import glob
 import math
@@ -8,10 +9,12 @@ from constants import DATE, VALUE, MAX_TEMPERATURE, MIN_TEMPERATURE, MEAN_HUMIDI
 
 
 class Parser:
+    """Class has all the file reading responsibilities"""
     def __init__(self):
         self.path = None
 
     def read_file_for_bar_chart(self, file_path):
+        """Reads data file for all highest and lowest temperature"""
         with open(file_path, encoding='utf-8') as file:
             all_rows_data = csv.DictReader(file)
             monthly_temperatures = []
@@ -22,6 +25,7 @@ class Parser:
             return monthly_temperatures
 
     def extract_temperature_from_row(self, weather_data_of_single_row):
+        """Read highest and lowest temperature of a single row"""
         daily_temperature = {
                     HIGHEST_TEMPERATURE: 0,
                     LOWEST_TEMPERATURE: 0,
@@ -42,6 +46,7 @@ class Parser:
         return daily_temperature
 
     def read_file(self, file_path):
+        """Read file for all highest, lowest temperatures and maximum humdity only if file exists"""
         all_daily_temperature = []
         with open(file_path, encoding='utf-8') as file:
             all_rows_data = csv.DictReader(file)
@@ -56,6 +61,7 @@ class Parser:
             return all_daily_temperature
 
     def read_file_for_yearly_weather(self, command_line_arguments):
+        """read data for highest, lowest and maximum humidity from multiple files"""
         file_paths = glob.glob(f'{command_line_arguments.file_path}weatherfiles/Murree_weather_'
                                + f'{command_line_arguments.date}_???.txt')
         all_months_weather = []
@@ -73,6 +79,7 @@ class Parser:
         return all_months_weather
 
     def get_file_path(self, arguments):
+        """Generate the complete file path for reading data"""
         list_split = arguments.date.split('/')
         month = calendar.month_name[int(list_split[1])]
         year = list_split[0]
@@ -84,6 +91,7 @@ class Parser:
             print('invalid year entered')
 
     def read_file_line_by_line(self, all_rows_data, monthly_temperature):
+        """read file data for a single row"""
         for weather_data_of_single_row in all_rows_data:
             daily_temperature = self.extract_required_weatherdata_from_dataset_of_yearly(
                 weather_data_of_single_row
@@ -96,7 +104,7 @@ class Parser:
         return monthly_temperature
 
     def extract_required_weatherdata_from_dataset_of_yearly(self, weather_data_of_single_row):
-
+        """returns appropriate dictionary according to column names of dataset"""
         if weather_data_of_single_row[MAX_TEMPERATURE] == '' \
             or weather_data_of_single_row[MIN_TEMPERATURE] == '' \
                 or weather_data_of_single_row[MEAN_HUMIDITY] == '':
@@ -118,6 +126,7 @@ class Parser:
 
 
     def get_monthly_weather_data(self, daily_temperature, monthly_temperature):
+        """gets the monthly weather data from the daily weather values """
         if daily_temperature is not None:
             self.compare_single_attribute_temperature(
                 daily_temperature,
@@ -140,6 +149,7 @@ class Parser:
             monthly_temperature,
             key_attribute
             ):
+        """compares single attribute of daily temoprature with monthly temperature attribite"""
 
         if key_attribute == LOWEST_TEMPERATURE:
             if daily_temperature[key_attribute] \
