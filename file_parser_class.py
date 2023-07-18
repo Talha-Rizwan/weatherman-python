@@ -110,18 +110,12 @@ class Parser:
                 or weather_data_of_single_row[MEAN_HUMIDITY] == '':
             return None
 
-        if PKT in weather_data_of_single_row.keys():
-            return  {
-            HIGHEST_TEMPERATURE: int(weather_data_of_single_row[MAX_TEMPERATURE]),
-            LOWEST_TEMPERATURE: int(weather_data_of_single_row[MIN_TEMPERATURE]),
-            MAXIMUM_HUMIDITY: int(weather_data_of_single_row[MEAN_HUMIDITY]),
-            DATE_OF_THE_DAY: weather_data_of_single_row[PKT]
-            }
+        weather_date = PKT if 'PKT' in weather_data_of_single_row.keys() else PKST
         return  {
         HIGHEST_TEMPERATURE: int(weather_data_of_single_row[MAX_TEMPERATURE]),
         LOWEST_TEMPERATURE: int(weather_data_of_single_row[MIN_TEMPERATURE]),
         MAXIMUM_HUMIDITY: int(weather_data_of_single_row[MEAN_HUMIDITY]),
-        DATE_OF_THE_DAY: weather_data_of_single_row[PKST]
+        DATE_OF_THE_DAY: weather_data_of_single_row[weather_date]
         }
 
 
