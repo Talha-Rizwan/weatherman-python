@@ -58,7 +58,7 @@ class Parser:
     def read_file_for_yearly_weather(self, command_line_arguments):
         file_paths = glob.glob(f'{command_line_arguments.file_path}weatherfiles/Murree_weather_'
                                + f'{command_line_arguments.date}_???.txt')
-        all_months_weather_values = []
+        all_months_weather = []
         for file in file_paths:
             with open(file, encoding='utf-8') as file:
                 all_rows_data = csv.DictReader(file)
@@ -67,10 +67,10 @@ class Parser:
                 LOWEST_TEMPERATURE: {VALUE: math.inf, DATE: None },
                 MAXIMUM_HUMIDITY: {VALUE: -math.inf, DATE: None }
                 }
-                this_month_weather_values \
+                this_month_weather \
                     = self.read_file_line_by_line(all_rows_data, monthly_temperature)
-                all_months_weather_values.append(this_month_weather_values)
-        return all_months_weather_values
+                all_months_weather.append(this_month_weather)
+        return all_months_weather
 
     def get_file_path(self, arguments):
         list_split = arguments.date.split('/')

@@ -15,9 +15,9 @@ def check_flag_argument(arguments):
     displayer = Display()
 
     if arguments.e:
-        all_months_weather_values = parse.read_file_for_yearly_weather(arguments)
-        yearly_temperature_values = calculate.get_yearly_weather_results(all_months_weather_values)
-        displayer.display_yearly_results(yearly_temperature_values)
+        months_weather_data = parse.read_file_for_yearly_weather(arguments)
+        yearly_temperature = calculate.get_yearly_weather_results(months_weather_data)
+        displayer.display_yearly_results(yearly_temperature)
 
     elif arguments.a or arguments.c or arguments.d:
         parse.get_file_path(arguments)
@@ -28,11 +28,11 @@ def check_flag_argument(arguments):
                 mean_temperature = calculate.get_sum_values(daily_temperatures)
                 displayer.display_average_results(mean_temperature)
             else :
-                all_month_temperature_values = parse.read_file_for_bar_chart(file)
+                this_month_temperature = parse.read_file_for_bar_chart(file)
                 if arguments.c:
-                    displayer.generate_bar_chart_for_individual_temperature(all_month_temperature_values, arguments)
+                    displayer.generate_bar_chart_for_individual_temperature(this_month_temperature, arguments)
                 else:
-                    displayer.generate_bar_chart_for_combined_temperature(all_month_temperature_values, arguments)                    
+                    displayer.generate_bar_chart_for_combined_temperature(this_month_temperature, arguments)                    
     else:
         print('Incorrect Flag!')
 

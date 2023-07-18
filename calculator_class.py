@@ -77,15 +77,15 @@ class Calculator :
             LOWEST_TEMPERATURE: {VALUE: math.inf, DATE: None },
             MAXIMUM_HUMIDITY: {VALUE: -math.inf, DATE: None }
         }
-        for month_weather_values in monthly_temperatures:
-            self.compare_monthly_with_yearly_weather_values(
-                month_weather_values,
+        for month_weather in monthly_temperatures:
+            self.compare_monthly_with_yearly_weather(
+                month_weather,
                 yearly_temperature
                 )
 
         return yearly_temperature
 
-    def compare_monthly_with_yearly_weather_values(self, monthly_temperature,
+    def compare_monthly_with_yearly_weather(self, monthly_temperature,
                                                yearly_temperature ):
         self.compare_temperature_for_single_attribute_of_monthly_to_yearly \
             (monthly_temperature, yearly_temperature, HIGHEST_TEMPERATURE)
