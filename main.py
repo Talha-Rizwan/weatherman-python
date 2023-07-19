@@ -35,12 +35,12 @@ def main():
                     displayer.generate_bar_chart_for_individual_temperature(
                         this_month_temperature,
                         arg.command_line_arguments
-                        )
+                    )
                 else:
                     displayer.generate_bar_chart_for_combined_temperature(
                         this_month_temperature,
                         arg.command_line_arguments
-                        )
+                    )
 
 
 if __name__ == '__main__':

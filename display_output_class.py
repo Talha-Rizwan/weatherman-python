@@ -1,5 +1,7 @@
 """All tasks related to output display are placed here"""
+
 import calendar
+
 from constants import HIGHEST_TEMPERATURE, LOWEST_TEMPERATURE, MAXIMUM_HUMIDITY
 from constants import MAXIMUM_HUMIDITY_MEAN, HIGHEST_TEMPERATURE_MEAN, LOWEST_TEMPERATURE_MEAN
 from constants import DATE, VALUE
@@ -42,23 +44,23 @@ class Display:
             self,
             month_temperature,
             arguments
-            ):
+        ):
         """Displays bar chart for highest and lowest temperatures of each day on different lines"""
         try:
-            list_split = arguments.date.split('/')
-            print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
+            date_split = arguments.date.split('/')
+            print(f'{calendar.month_name[int(date_split[1])]} {date_split[0]}')
             day_number = 1
             for day in month_temperature:
                 self.generate_bar_chart_for_each_temperature(
                     day_number,
                     day[HIGHEST_TEMPERATURE],
                     self.high_temperature_color
-                    )
+                )
                 self.generate_bar_chart_for_each_temperature(
                     day_number,
                     day[LOWEST_TEMPERATURE],
                     self.low_temperature_color
-                    )
+                )
                 day_number += 1
         except (ValueError, IndexError) as error_message:
             print(f'Error occured while processing the date: {error_message}')
@@ -73,8 +75,8 @@ class Display:
     def generate_bar_chart_for_combined_temperature(self, month_temperature, arguments):
         """Displays bar chart for highest and lowest temperatures of each day on single lines """
         try:
-            list_split = arguments.date.split('/')
-            print(f'{calendar.month_name[int(list_split[1])]} {list_split[0]}')
+            date_split = arguments.date.split('/')
+            print(f'{calendar.month_name[int(date_split[1])]} {date_split[0]}')
             day_number = 1
             for day in month_temperature:
                 self.generate_bar_chart_for_each_value_of_combined(day_number, day)
