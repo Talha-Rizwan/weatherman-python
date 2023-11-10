@@ -1,7 +1,4 @@
-# Weatherman-assignment
-
-
-# Weather Man
+# Weatherman
 
 ## Overview
 
